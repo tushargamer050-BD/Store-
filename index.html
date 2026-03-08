@@ -48,6 +48,7 @@
             margin: 0;
             padding: 0;
             user-select: none;
+            padding-bottom: 90px; /* Space for bottom nav */
         }
 
         /* ==========================================
@@ -128,47 +129,7 @@
             transform: translateY(-2px);
         }
 
-        /* ==========================================
-         * COLOR PICKER STYLING (UPDATED)
-         * ==========================================
-         */
-        .color-option {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 3px solid #f1f5f9;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: relative;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .color-option.selected {
-            transform: scale(1.15);
-            border-color: var(--dark);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        }
-        .color-option.selected::after {
-            content: '\f00c';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            color: white; /* Will change dynamically for white bg */
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 14px;
-            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
-        }
-        /* Special handling for white color selection tick */
-        .color-option[style*="background: white"].selected::after,
-        .color-option.bg-white.selected::after {
-            color: var(--dark);
-        }
-
-        /* ==========================================
-         * BANNER CAROUSEL STYLING (NEW)
-         * ==========================================
-         */
+        /* Banner Carousel */
         #banner-carousel-container {
             width: 100%;
             height: 180px;
@@ -216,14 +177,11 @@
             border-radius: 10px;
         }
 
-        /* ==========================================
-         * PAGE ANIMATIONS & LAYOUT
-         * ==========================================
-         */
+        /* Page Animations */
         .page { 
             display: none; 
             padding-top: 110px; 
-            padding-bottom: 140px; 
+            padding-bottom: 40px; 
             min-height: 100vh; 
         }
         .page-active { 
@@ -236,20 +194,22 @@
             to { opacity: 1; transform: translateY(0) scale(1); } 
         }
 
-        /* Glass Navigation */
-        .glass-nav { 
-            background: rgba(15, 23, 42, 0.85); 
-            backdrop-filter: blur(25px); 
-            -webkit-backdrop-filter: blur(25px);
-            border-radius: 2.5rem; 
-            border: 1px solid rgba(255,255,255,0.1); 
-            box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.5);
-        }
-        
-        /* ==========================================
-         * LOADER & UTILS
+        /* 
+         * ==========================================
+         * UPDATED GLASS NAVIGATION (FIXED BOTTOM)
          * ==========================================
          */
+        .glass-nav { 
+            background: rgba(15, 23, 42, 0.95); 
+            backdrop-filter: blur(25px); 
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 24px 24px 0 0; /* Only top corners rounded */
+            border-top: 1px solid rgba(255,255,255,0.1); 
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
+            padding-bottom: env(safe-area-inset-bottom); /* For iPhone Home Bar */
+        }
+        
+        /* Loader */
         #loader { 
             position: fixed; 
             inset: 0; 
@@ -261,15 +221,24 @@
             justify-content: center; 
         }
         
-        .loader-logo-anim {
-            animation: pulseLogo 2s infinite ease-in-out;
-            border-radius: 24px;
-            box-shadow: 0 20px 60px -10px rgba(255, 56, 92, 0.3);
+        /* Floating Logo Animation */
+        .loader-float {
+            animation: floatLogo 3s ease-in-out infinite;
         }
-        @keyframes pulseLogo {
-            0% { transform: scale(1); opacity: 1; filter: brightness(1); }
-            50% { transform: scale(1.08); opacity: 0.9; filter: brightness(1.1); }
-            100% { transform: scale(1); opacity: 1; filter: brightness(1); }
+        @keyframes floatLogo {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Progress Bar Animation */
+        .loader-progress {
+            width: 0%;
+            animation: progressFill 2s ease-in-out infinite;
+        }
+        @keyframes progressFill {
+            0% { width: 0%; left: 0; }
+            50% { width: 100%; left: 0; }
+            100% { width: 0%; left: 100%; }
         }
 
         /* Rating Stars */
@@ -305,7 +274,7 @@
 
         /* Floating Magic Button */
         .dynamic-hub-btn {
-            position: fixed; bottom: 120px; right: 25px; width: 56px; height: 56px; 
+            position: fixed; bottom: 110px; right: 25px; width: 56px; height: 56px; 
             background: linear-gradient(135deg, #6366f1, #d946ef); 
             border-radius: 20px; color: white; display: flex; align-items: center; 
             justify-content: center; font-size: 22px; 
@@ -316,7 +285,7 @@
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
         /* Modal Transitions */
-        #modal { transition: opacity 0.3s; }
+        #modal, #edit-profile-modal, #welcome-modal { transition: opacity 0.3s; }
         .modal-content-wrapper { animation: modalSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes modalSlideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
@@ -337,12 +306,58 @@
 <body>
 
     <!-- ==========================================
-         LOADER SCREEN
+         NEW LOADER SCREEN (No Spinner, Beautiful Animation)
          ========================================== -->
     <div id="loader">
-        <img id="loader-img" src="https://cdn-icons-png.flaticon.com/512/3081/3081840.png" class="w-24 h-24 object-contain loader-logo-anim mb-8">
-        <div class="w-10 h-10 border-4 border-slate-100 border-t-rose-500 rounded-full animate-spin"></div>
-        <p class="mt-6 font-black text-[11px] uppercase tracking-[0.4em] text-slate-400 animate-pulse">Initializing Nexus</p>
+        <div class="relative mb-8">
+            <!-- Glowing Background Effect -->
+            <div class="absolute inset-0 bg-rose-500 blur-2xl opacity-20 rounded-full animate-pulse"></div>
+            <!-- Logo with Float Animation -->
+            <img id="loader-img" src="https://cdn-icons-png.flaticon.com/512/3081/3081840.png" class="w-28 h-28 object-contain relative z-10 loader-float">
+        </div>
+        
+        <!-- Sleek Progress Bar -->
+        <div class="w-48 h-1.5 bg-slate-100 rounded-full overflow-hidden relative">
+            <div class="absolute top-0 bottom-0 bg-rose-500 rounded-full loader-progress"></div>
+        </div>
+        
+        <p class="mt-5 font-black text-[10px] uppercase tracking-[0.4em] text-slate-300 animate-pulse">Starting Engine...</p>
+    </div>
+
+    <!-- ==========================================
+         WELCOME / ONBOARDING MODAL
+         ========================================== -->
+    <div id="welcome-modal" class="fixed inset-0 bg-slate-900 z-[4000] hidden flex flex-col items-center justify-center p-8 text-center">
+        <div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-900 to-rose-900 opacity-90"></div>
+        
+        <div class="relative z-10 w-full max-w-sm animate-[pageFadeUp_0.8s_ease-out]">
+            <div class="w-24 h-24 bg-white/10 rounded-[2rem] mx-auto mb-8 flex items-center justify-center backdrop-blur-lg border border-white/10 shadow-2xl">
+                <img src="https://cdn-icons-png.flaticon.com/512/3081/3081840.png" class="w-14 h-14 object-contain">
+            </div>
+            
+            <h1 class="text-3xl font-black text-white uppercase italic tracking-tighter mb-2">Welcome to Nexus</h1>
+            <p class="text-white/50 text-xs font-bold uppercase tracking-widest mb-10">Let's set up your profile</p>
+            
+            <div class="bg-white rounded-[2.5rem] p-8 shadow-2xl shadow-black/30">
+                <!-- Image Picker -->
+                <div class="relative w-24 h-24 mx-auto mb-6">
+                    <img id="welcome-pfp-preview" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Nexus" class="w-full h-full rounded-full object-cover border-4 border-slate-100 shadow-lg">
+                    <label for="welcome-pfp-input" class="absolute bottom-0 right-0 w-8 h-8 bg-slate-900 text-white rounded-full flex items-center justify-center cursor-pointer shadow-lg active:scale-90 transition-transform hover:bg-rose-500">
+                        <i class="fa fa-camera text-xs"></i>
+                    </label>
+                    <input type="file" id="welcome-pfp-input" class="hidden" accept="image/*" onchange="previewIntroImage(event)">
+                </div>
+
+                <!-- Name Input -->
+                <div class="mb-6">
+                    <input type="text" id="welcome-name-input" class="input-box w-full p-4 rounded-xl font-bold text-slate-800 outline-none text-sm text-center bg-slate-50 focus:bg-white" placeholder="Enter Your Full Name">
+                </div>
+                
+                <button onclick="finishIntro()" class="w-full bg-rose-500 text-white py-4 rounded-xl font-black text-xs uppercase tracking-[0.2em] shadow-lg shadow-rose-500/30 active:scale-95 transition-all hover:bg-rose-600">
+                    Get Started <i class="fa fa-arrow-right ml-1"></i>
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- ==========================================
@@ -387,9 +402,8 @@
             </div>
         </div>
 
-        <!-- NEW: Dynamic Admin Banner Carousel -->
+        <!-- Dynamic Admin Banner Carousel -->
         <div id="banner-carousel-container" class="hidden">
-            <!-- Slides injected via JS -->
             <div class="banner-dots" id="banner-dots"></div>
         </div>
 
@@ -444,13 +458,11 @@
             <div class="bg-slate-900 rounded-[2rem] p-7 mt-6 relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-rose-500 rounded-full blur-[60px] opacity-20"></div>
                 
-                <!-- Subtotal -->
                 <div class="flex justify-between items-center mb-3">
                     <span class="text-slate-400 text-[11px] font-bold uppercase tracking-widest">Subtotal</span>
                     <span id="checkout-subtotal" class="text-lg font-bold text-white">৳0</span>
                 </div>
                 
-                <!-- Delivery Charge -->
                 <div class="flex justify-between items-center mb-4 pb-4 border-b border-slate-800">
                     <span class="text-slate-400 text-[11px] font-bold uppercase tracking-widest flex items-center gap-2">
                         <i class="fa-solid fa-truck-fast"></i> Delivery Charge
@@ -458,7 +470,6 @@
                     <span class="text-lg font-bold text-emerald-400">+ ৳120</span>
                 </div>
                 
-                <!-- Grand Total -->
                 <div class="flex justify-between items-center mb-1">
                     <span class="text-white text-[12px] font-black uppercase tracking-widest">Total Pay</span>
                     <span id="final-total" class="text-3xl font-black text-white">৳0</span>
@@ -483,22 +494,28 @@
     </main>
 
     <!-- ==========================================
-         PROFILE PAGE
+         PROFILE PAGE (UPDATED)
          ========================================== -->
     <main id="profile-page" class="page px-6 text-center">
-        <div class="premium-card p-10 mb-8 border border-slate-100 bg-gradient-to-b from-white to-slate-50">
+        <div class="premium-card p-10 mb-8 border border-slate-100 bg-gradient-to-b from-white to-slate-50 relative overflow-visible">
+            
+            <!-- Quick Edit Button -->
+            <button onclick="openProfileEditor()" class="absolute top-4 right-4 text-slate-400 hover:text-rose-500 transition-colors bg-white border border-slate-100 w-10 h-10 rounded-full flex items-center justify-center shadow-sm">
+                <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+
             <div class="relative w-36 h-36 mx-auto mb-6 group">
                 <div class="absolute inset-0 bg-rose-500 rounded-full animate-pulse opacity-10"></div>
                 <img id="pfp-img" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Nexus" class="w-full h-full rounded-full border-[6px] border-white shadow-2xl object-cover relative z-10">
-                <label for="pfp-input" class="absolute bottom-1 right-1 bg-slate-900 text-white w-12 h-12 flex items-center justify-center rounded-full cursor-pointer border-4 border-white z-20 shadow-xl active:scale-90 transition-all hover:bg-rose-500">
-                    <i class="fa fa-camera text-sm"></i>
-                </label>
-                <input type="file" id="pfp-input" class="hidden" onchange="uploadPFP(event)">
             </div>
-            <h2 class="font-black text-2xl mb-2 text-slate-900 tracking-tight">Nexus Member</h2>
+            
+            <h2 id="user-display-name" class="font-black text-2xl mb-2 text-slate-900 tracking-tight uppercase">Nexus Member</h2>
+            
             <div class="inline-block px-5 py-2 bg-slate-100 rounded-full border border-slate-200">
                 <p id="profile-id" class="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em]">ID: SYNCING...</p>
             </div>
+
+            <button onclick="openProfileEditor()" class="mt-6 text-[10px] font-bold text-rose-500 uppercase tracking-widest border-b border-rose-200 pb-0.5">Edit Profile</button>
         </div>
 
         <div class="text-left pb-10">
@@ -513,21 +530,50 @@
     </main>
 
     <!-- ==========================================
+         EDIT PROFILE MODAL
+         ========================================== -->
+    <div id="edit-profile-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[3000] hidden flex items-center justify-center p-6">
+        <div class="bg-white w-full max-w-sm rounded-[2rem] p-8 shadow-2xl relative animate-[modalSlideUp_0.4s_ease-out]">
+            <button onclick="closeProfileEditor()" class="absolute top-5 right-5 w-8 h-8 flex items-center justify-center bg-slate-100 rounded-full text-slate-500 hover:bg-slate-200">
+                <i class="fa fa-times"></i>
+            </button>
+            
+            <h3 class="text-xl font-black uppercase italic text-slate-800 mb-6 text-center">Edit Profile</h3>
+            
+            <div class="flex flex-col items-center gap-6">
+                <div class="relative w-28 h-28">
+                    <img id="edit-pfp-preview" src="" class="w-full h-full rounded-full object-cover border-4 border-slate-100 shadow-md">
+                    <label for="new-pfp-input" class="absolute bottom-0 right-0 w-8 h-8 bg-rose-500 text-white rounded-full flex items-center justify-center cursor-pointer shadow-lg active:scale-90 transition-transform">
+                        <i class="fa fa-camera text-xs"></i>
+                    </label>
+                    <input type="file" id="new-pfp-input" class="hidden" accept="image/*" onchange="previewNewPFP(event)">
+                </div>
+
+                <div class="w-full">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-3 mb-1 block">Full Name</label>
+                    <input type="text" id="edit-name-input" class="input-box w-full p-4 rounded-xl font-bold text-slate-800 outline-none text-sm text-center" placeholder="Enter your name">
+                </div>
+
+                <button onclick="saveProfileDetails()" class="w-full bg-slate-900 text-white py-4 rounded-xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-slate-900/20 active:scale-95 transition-all">
+                    Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
          PRODUCT DETAILS MODAL
          ========================================== -->
     <div id="modal" class="fixed inset-0 bg-white z-[2000] hidden overflow-y-auto">
         <div class="p-6 pt-24 max-w-2xl mx-auto min-h-screen relative">
-            <!-- Close Button -->
             <button onclick="closeModal()" class="fixed top-6 left-6 w-12 h-12 bg-white/80 backdrop-blur-md shadow-2xl rounded-2xl flex items-center justify-center z-[2010] active:scale-90 transition-all border border-slate-100">
                 <i class="fa fa-chevron-left text-slate-900"></i>
             </button>
             
-            <!-- Product Image -->
             <div class="bg-slate-50 rounded-[3.5rem] p-12 mb-10 flex items-center justify-center relative min-h-[400px] border border-slate-100">
                 <div id="m-discount-tag" class="discount-badge hidden scale-125 top-10 left-10"></div>
                 <img id="m-img" src="" class="max-h-80 w-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.15)] hover:scale-105 transition-transform duration-500">
                 
-                <!-- Wishlist Toggle -->
                 <button id="like-btn" class="absolute bottom-8 right-8 w-16 h-16 bg-white shadow-2xl rounded-[1.5rem] text-slate-300 text-2xl flex items-center justify-center border border-slate-50 active:scale-90 transition-all hover:text-rose-500">
                     <i class="fa-regular fa-heart"></i>
                 </button>
@@ -539,12 +585,12 @@
                 </div>
                 <p id="m-desc" class="text-slate-500 font-medium mb-10 leading-relaxed text-sm"></p>
 
-                <!-- SIZE SELECTION (Conditionally Rendered) -->
                 <div id="size-section" class="mb-10 hidden">
                     <div class="flex items-center justify-between mb-4">
                         <p class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Select Size</p>
                         <span class="text-[10px] text-rose-500 font-bold cursor-pointer">Size Guide</span>
                     </div>
+                    <!-- BUTTONS TEXT WILL CHANGE DYNAMICALLY FOR SHOES -->
                     <div class="flex gap-3">
                         <button onclick="selectSize(this, 'S')" class="size-btn flex-1 py-4">S</button>
                         <button onclick="selectSize(this, 'M')" class="size-btn flex-1 py-4">M</button>
@@ -554,16 +600,11 @@
                     </div>
                 </div>
 
-                <!-- COLOR SELECTION (Conditionally Rendered) -->
-                <div id="color-section" class="mb-12 hidden">
-                    <p class="text-[11px] font-black text-slate-400 uppercase mb-5 tracking-[0.2em]">Select Color</p>
-                    <div class="flex gap-4 flex-wrap" id="color-container">
-                        <div class="color-option bg-slate-900" style="background: #0f172a" onclick="selectColor(this, 'Black')"></div>
-                        <div class="color-option bg-white" style="background: #ffffff" onclick="selectColor(this, 'White')"></div>
-                        <div class="color-option bg-blue-600" style="background: #2563eb" onclick="selectColor(this, 'Blue')"></div>
-                        <div class="color-option bg-red-500" style="background: #ef4444" onclick="selectColor(this, 'Red')"></div>
-                        <div class="color-option bg-emerald-500" style="background: #10b981" onclick="selectColor(this, 'Green')"></div>
-                        <div class="color-option bg-yellow-400" style="background: #facc15" onclick="selectColor(this, 'Gold')"></div>
+                <!-- NEW: DISPLAY COMMENTS SECTION -->
+                <div class="mb-6">
+                    <h4 class="font-black text-xs uppercase tracking-widest text-slate-900 mb-4">Customer Reviews</h4>
+                    <div id="comments-container" class="space-y-4 max-h-64 overflow-y-auto pr-2">
+                        <!-- Comments will be loaded here -->
                     </div>
                 </div>
 
@@ -571,7 +612,7 @@
                 <div class="bg-slate-50 p-8 rounded-[2.5rem] mb-6 border border-slate-100">
                     <div class="flex flex-col gap-6 mb-8">
                         <div class="flex justify-between items-center border-b border-slate-200 pb-4">
-                            <h4 class="font-black text-xs uppercase tracking-widest text-slate-900">Review Product</h4>
+                            <h4 class="font-black text-xs uppercase tracking-widest text-slate-900">Write a Review</h4>
                             <div class="flex gap-1" id="star-input-container">
                                 <i class="fa fa-star star-input" onclick="setRating(1)"></i>
                                 <i class="fa fa-star star-input" onclick="setRating(2)"></i>
@@ -585,7 +626,7 @@
                     
                     <div class="flex gap-4">
                         <button onclick="submitReview()" class="flex-1 bg-slate-900 text-white py-4 rounded-[1.2rem] font-black text-xs uppercase tracking-[0.2em] shadow-lg shadow-slate-200 active:scale-95 transition-all hover:bg-slate-800">
-                            Submit Review
+                            Post Comment
                         </button>
                         <button onclick="openExternalApp('comments')" class="w-16 bg-white text-slate-900 border border-slate-200 rounded-[1.2rem] font-black flex items-center justify-center shadow-sm active:scale-90 transition-all hover:bg-slate-50">
                             <i class="fa fa-external-link-alt text-xs"></i>
@@ -596,7 +637,6 @@
                 </div>
             </div>
 
-            <!-- Sticky Bottom Action Bar -->
             <div class="fixed bottom-0 left-0 w-full p-6 px-8 bg-white/90 backdrop-blur-2xl border-t border-slate-100 flex justify-between items-center z-[2020] shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
                 <div>
                     <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Price</span>
@@ -628,9 +668,9 @@
     </div>
 
     <!-- ==========================================
-         BOTTOM NAVIGATION
+         UPDATED BOTTOM NAVIGATION
          ========================================== -->
-    <nav class="fixed bottom-8 left-6 right-6 h-20 glass-nav flex justify-around items-center z-[1000]">
+    <nav class="fixed bottom-0 left-0 w-full h-20 glass-nav flex justify-around items-center z-[1000] px-6">
         <button onclick="nav('home-page')" id="nav-home" class="text-rose-500 text-2xl transition-all duration-300 transform hover:scale-110 active:scale-95">
             <i class="fa-solid fa-house"></i>
         </button>
@@ -671,9 +711,17 @@
         let activeCategory = 'All';
         let dynamicLink = ""; 
         let bannerInterval;
+        let newProfileImageBase64 = null; // For Edit Profile
+        let introImageBase64 = null; // For Welcome Screen
 
         // --- INITIALIZATION ---
         function init() {
+            // CHECK FOR FIRST TIME USER
+            const setupComplete = localStorage.getItem('nexus_setup_complete');
+            if(!setupComplete) {
+                document.getElementById('welcome-modal').classList.remove('hidden');
+            }
+
             // 1. Settings & Headers
             db.ref('settings').on('value', snap => {
                 if(snap.exists()) {
@@ -683,7 +731,6 @@
                     document.getElementById('app-logo').src = logoUrl;
                     document.getElementById('loader-img').src = logoUrl; 
                     
-                    // Admin Dot Button Logic
                     const dotBtn = document.getElementById('dynamic-dot-btn');
                     const dotIcon = document.getElementById('dynamic-dot-icon');
                     
@@ -700,7 +747,7 @@
                 }
             });
 
-            // 2. Banner System (New Feature)
+            // 2. Banner System
             db.ref('banners').on('value', snap => {
                 banners = [];
                 if(snap.exists()) {
@@ -711,19 +758,40 @@
                 }
             });
 
-            // 3. Product Catalog
+            // 3. Product Catalog (UPDATED FOR SORTING)
             db.ref('products').on('value', snap => {
                 products = [];
                 if(snap.exists()) snap.forEach(child => { products.push({ id: child.key, ...child.val() }); });
+                
+                // --- SORT BY POPULARITY ---
+                // যে প্রোডাক্ট বেশি কার্ট এ এড হয়েছে, সেটা সবার উপরে যাবে
+                products.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+                // --------------------------------------
+
                 renderProducts();
                 document.getElementById('loader').style.display = 'none';
             });
 
-            // 4. User Profile & Wishlist
+            // 4. User Profile
             db.ref('users/' + USER_ID).on('value', snap => {
                 if(snap.exists()) {
                     const data = snap.val();
-                    if(data.pfp) document.getElementById('pfp-img').src = data.pfp;
+                    
+                    if(data.pfp) {
+                        document.getElementById('pfp-img').src = data.pfp;
+                        document.getElementById('edit-pfp-preview').src = data.pfp; 
+                    }
+                    
+                    if(data.name) {
+                        document.getElementById('user-display-name').innerText = data.name;
+                        document.getElementById('u-name').value = data.name;
+                        // If name exists in DB, assume setup is done (sync across devices)
+                        localStorage.setItem('nexus_setup_complete', 'true');
+                        document.getElementById('welcome-modal').classList.add('hidden');
+                    } else {
+                        document.getElementById('user-display-name').innerText = "Nexus Member";
+                    }
+
                     wishlist = data.wishlist ? Object.values(data.wishlist) : [];
                     renderWishlist();
                 }
@@ -735,7 +803,7 @@
                 const history = document.getElementById('order-history');
                 history.innerHTML = '';
                 if(snap.exists()) {
-                    const orders = Object.values(snap.val()).reverse(); // Newest first
+                    const orders = Object.values(snap.val()).reverse(); 
                     orders.forEach(o => {
                         const date = new Date(o.timestamp || Date.now()).toLocaleDateString();
                         history.innerHTML += `
@@ -772,23 +840,47 @@
             });
         }
 
+        // --- NEW: WELCOME SCREEN LOGIC ---
+        function previewIntroImage(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+            if(file.size > 2000000) return alert("⚠️ Image too large! Max 2MB.");
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('welcome-pfp-preview').src = e.target.result;
+                introImageBase64 = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function finishIntro() {
+            const name = document.getElementById('welcome-name-input').value.trim();
+            if(!name) return alert("⚠️ Please enter your name to continue!");
+            
+            const updates = { name: name };
+            if(introImageBase64) updates.pfp = introImageBase64;
+            
+            db.ref('users/' + USER_ID).update(updates).then(() => {
+                localStorage.setItem('nexus_setup_complete', 'true');
+                document.getElementById('welcome-modal').classList.add('hidden');
+            });
+        }
+
         // --- BANNER LOGIC ---
         function renderBanners() {
             const container = document.getElementById('banner-carousel-container');
             const dotsContainer = document.getElementById('banner-dots');
             
-            // If no banners, hide container
             if(banners.length === 0) {
                 container.classList.add('hidden');
                 return;
             }
             container.classList.remove('hidden');
             
-            // Clean previous
             container.querySelectorAll('.banner-slide').forEach(e => e.remove());
             dotsContainer.innerHTML = '';
             
-            // Create DOM elements
             banners.forEach((b, i) => {
                 const img = document.createElement('img');
                 img.src = b.image;
@@ -801,7 +893,6 @@
                 dotsContainer.appendChild(dot);
             });
 
-            // Start Auto Slider
             let currentSlide = 0;
             if(bannerInterval) clearInterval(bannerInterval);
             
@@ -816,7 +907,7 @@
                 
                 slides[currentSlide].classList.add('active');
                 dots[currentSlide].classList.add('active');
-            }, 4000); // 4 Seconds per slide
+            }, 4000); 
         }
 
         // --- PRODUCT RENDERING ---
@@ -848,23 +939,74 @@
                 </div>`;
         }
 
-        // --- MODAL CONTROLS (Updated Logic) ---
+        // --- PROFILE EDITING LOGIC ---
+        function openProfileEditor() {
+            const modal = document.getElementById('edit-profile-modal');
+            const currentName = document.getElementById('user-display-name').innerText;
+            const currentPic = document.getElementById('pfp-img').src;
+
+            if(currentName !== "NEXUS MEMBER") {
+                document.getElementById('edit-name-input').value = currentName;
+            } else {
+                document.getElementById('edit-name-input').value = "";
+            }
+            
+            document.getElementById('edit-pfp-preview').src = currentPic;
+            newProfileImageBase64 = null; 
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeProfileEditor() {
+            document.getElementById('edit-profile-modal').classList.add('hidden');
+        }
+
+        function previewNewPFP(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+            if(file.size > 2000000) return alert("⚠️ Image too large! Max 2MB."); 
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('edit-pfp-preview').src = e.target.result;
+                newProfileImageBase64 = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function saveProfileDetails() {
+            const newName = document.getElementById('edit-name-input').value.trim();
+            const updates = {};
+
+            if(newName) updates.name = newName;
+            if(newProfileImageBase64) updates.pfp = newProfileImageBase64;
+
+            if(Object.keys(updates).length === 0) {
+                closeProfileEditor();
+                return;
+            }
+
+            db.ref('users/' + USER_ID).update(updates).then(() => {
+                alert("✅ Profile updated successfully!");
+                closeProfileEditor();
+            }).catch(e => alert("Error updating profile: " + e.message));
+        }
+
+        // --- MODAL CONTROLS (UPDATED LOGIC) ---
         function openModal(id) {
             const p = products.find(x => x.id === id);
             if(!p) return;
             currentProductId = id; 
             userRating = 0; 
             selectedSize = null; 
-            selectedColor = null;
+            // COLOR REMOVED
             resetStars();
             
-            // Populate Data
             document.getElementById('m-name').innerText = p.name;
             document.getElementById('m-img').src = p.image;
             document.getElementById('m-price').innerText = "৳" + p.price;
             document.getElementById('m-desc').innerText = p.description || "Experience premium quality with Nexus Pro. Authentic products sourced directly for our elite members.";
             
-            // DISCOUNT TAG
             const dTag = document.getElementById('m-discount-tag');
             if(p.discount) {
                 dTag.innerText = `SAVE ৳${p.discount}`;
@@ -873,54 +1015,105 @@
                 dTag.classList.add('hidden');
             }
 
-            // --- CATEGORY BASED LOGIC (User Request: Clothes & Shoes Only) ---
             const sizeSec = document.getElementById('size-section');
-            const colorSec = document.getElementById('color-section');
             const cat = p.category;
 
-            // Logic: Clothes OR Women OR Shoes get Size AND Color options
-            // Other categories get neither.
-            const hasVariants = (cat === 'Clothes' || cat === 'Women' || cat === 'Shoes');
+            // --- UPDATED VARIANT LOGIC ---
+            // 1. Remove Color (Done in HTML)
+            // 2. Women's Clothes = NO SIZE needed.
+            // 3. Shoes = SIZE NEEDED (and numbers).
+            // 4. Men's Clothes = SIZE NEEDED (S, M, L).
+            
+            const needsSize = (cat === 'Clothes' || cat === 'Shoes'); // Women excluded
 
-            if (hasVariants) {
+            if (needsSize) {
                 sizeSec.classList.remove('hidden');
-                colorSec.classList.remove('hidden');
+                
+                // DYNAMIC SIZE LABELS FOR SHOES VS CLOTHES
+                const labels = (cat === 'Shoes') 
+                    ? ['39', '40', '41', '42', '43'] 
+                    : ['S', 'M', 'L', 'XL', 'XXL'];
+                
+                const btns = document.querySelectorAll('.size-btn');
+                btns.forEach((btn, i) => {
+                    if(labels[i]) {
+                        btn.innerText = labels[i];
+                        // Update onclick dynamically
+                        btn.onclick = function() { selectSize(this, labels[i]); };
+                    }
+                });
+
             } else {
                 sizeSec.classList.add('hidden');
-                colorSec.classList.add('hidden');
             }
 
-            // Reset selections visually
             document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
-            document.querySelectorAll('.color-option').forEach(b => b.classList.remove('selected'));
 
-            // Wishlist State
             const isLiked = wishlist.some(item => item.id === id);
             updateLikeUI(isLiked);
 
-            // Show Modal
-            document.getElementById('modal').classList.remove('hidden');
-            document.body.style.overflow = 'hidden'; // Stop background scroll
+            // --- NEW: FETCH COMMENTS ---
+            const commentsContainer = document.getElementById('comments-container');
+            commentsContainer.innerHTML = '<div class="text-center py-4"><i class="fa fa-circle-notch fa-spin text-slate-300"></i></div>';
             
-            // Add to Cart Logic with Validation
-            document.getElementById('add-btn').onclick = () => {
-                // If variants are visible, enforce selection
-                if (hasVariants) {
-                    if(!selectedSize) return alert("⚠️ Please Select a Size!");
-                    if(!selectedColor) return alert("⚠️ Please Select a Color!");
+            db.ref('reviews/' + id).on('value', snap => {
+                commentsContainer.innerHTML = '';
+                if(snap.exists()) {
+                    const reviews = Object.values(snap.val()).reverse(); // Newest first
+                    reviews.forEach(r => {
+                        // Generate Stars HTML
+                        let starsHtml = '';
+                        for(let i=0; i<5; i++) {
+                            starsHtml += `<i class="fa fa-star text-[8px] ${i < r.rating ? 'text-amber-400' : 'text-slate-200'}"></i>`;
+                        }
+
+                        // Default Avatar if missing
+                        const userImg = r.userPfp || 'https://cdn-icons-png.flaticon.com/512/3081/3081840.png';
+                        const userName = r.userName || 'Nexus Member';
+
+                        commentsContainer.innerHTML += `
+                            <div class="flex gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-100/50">
+                                <img src="${userImg}" class="w-8 h-8 rounded-full object-cover border border-white shadow-sm flex-shrink-0">
+                                <div>
+                                    <div class="flex items-center gap-2 mb-0.5">
+                                        <h5 class="font-black text-[10px] uppercase text-slate-800">${userName}</h5>
+                                        <div class="flex gap-0.5">${starsHtml}</div>
+                                    </div>
+                                    <p class="text-[11px] text-slate-500 font-medium leading-tight">${r.comment}</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    commentsContainer.innerHTML = `
+                        <div class="text-center py-4 opacity-50">
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">No reviews yet. Be the first!</p>
+                        </div>`;
                 }
+            });
+
+            document.getElementById('modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            
+            // --- ADD TO CART CLICK ---
+            document.getElementById('add-btn').onclick = () => {
+                if (needsSize && !selectedSize) return alert("⚠️ Please Select a Size!");
+
+                // INCREMENT POPULARITY
+                db.ref('products/' + currentProductId + '/popularity').transaction(current_value => {
+                    return (current_value || 0) + 1;
+                });
 
                 cart.push({ 
                     ...p, 
-                    selectedSize: hasVariants ? selectedSize : null, 
-                    selectedColor: hasVariants ? selectedColor : null 
+                    selectedSize: needsSize ? selectedSize : null,
+                    selectedColor: null // No color
                 });
                 
                 updateCartUI();
                 closeModal();
                 nav('cart-page');
                 
-                // Success feedback
                 const btn = document.getElementById('nav-cart');
                 btn.classList.add('text-rose-500');
                 setTimeout(() => btn.classList.remove('text-rose-500'), 500);
@@ -932,6 +1125,8 @@
         function closeModal() {
             document.getElementById('modal').classList.add('hidden');
             document.body.style.overflow = 'auto';
+            // Detach listener to prevent memory leaks (optional but good practice)
+            if(currentProductId) db.ref('reviews/' + currentProductId).off();
         }
 
         // --- EXTERNAL APP SYSTEM ---
@@ -966,15 +1161,21 @@
             if(!userRating) return alert("Please select a star rating (1-5)!");
             if(!text) return alert("Please write a short review!");
             
+            // GET CURRENT USER DATA FOR DISPLAY
+            const currentName = document.getElementById('user-display-name').innerText;
+            const currentPfp = document.getElementById('pfp-img').src;
+
             const reviewData = { 
                 userId: USER_ID, 
+                userName: currentName,  // Added Name
+                userPfp: currentPfp,    // Added Photo
                 rating: userRating, 
                 comment: text, 
                 timestamp: firebase.database.ServerValue.TIMESTAMP 
             };
             
             db.ref('reviews/' + currentProductId).push(reviewData).then(() => {
-                alert("Thank you! Your review has been submitted.");
+                // alert("Thank you! Your review has been submitted."); // Alert removed for smoother UX, comments appear instantly
                 document.getElementById('review-text').value = '';
                 resetStars();
             });
@@ -993,7 +1194,7 @@
             }
         }
 
-        // --- CART SYSTEM (Updated with Delivery Charge) ---
+        // --- CART SYSTEM ---
         function updateCartUI() {
             const badge = document.getElementById('cart-badge');
             badge.innerText = cart.length;
@@ -1013,12 +1214,10 @@
                 container.innerHTML = cart.map((p, i) => {
                     subtotal += Number(p.price);
                     
-                    // Show variants if they exist
                     let variantText = "";
-                    if(p.selectedSize || p.selectedColor) {
+                    if(p.selectedSize) {
                         variantText = `<span class="block text-[10px] text-slate-400 font-bold mt-1">
-                            ${p.selectedSize ? `Size: ${p.selectedSize}` : ''} 
-                            ${p.selectedColor ? `• Color: ${p.selectedColor}` : ''}
+                            Size: ${p.selectedSize}
                         </span>`;
                     }
 
@@ -1039,7 +1238,6 @@
                 }).join('');
             }
             
-            // MATH UPDATE
             const total = subtotal + (cart.length > 0 ? DELIVERY_CHARGE : 0);
             
             document.getElementById('checkout-subtotal').innerText = "৳" + subtotal;
@@ -1069,14 +1267,12 @@
             if(ph.length < 11) return alert("⚠️ Enter a valid 11-digit phone number!");
 
             const oid = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
-            // Re-calculate safely
             const subtotal = cart.reduce((sum, item) => sum + Number(item.price), 0);
             const totalAmount = subtotal + DELIVERY_CHARGE;
             
             const itemsList = cart.map(x => {
                 let details = x.name;
                 if(x.selectedSize) details += ` [${x.selectedSize}]`;
-                if(x.selectedColor) details += ` [${x.selectedColor}]`;
                 return details;
             }).join(', ');
 
@@ -1094,7 +1290,6 @@
                 timestamp: firebase.database.ServerValue.TIMESTAMP 
             };
 
-            // Push to Firebase
             db.ref('orders').push(orderData);
             db.ref('users/' + USER_ID + '/orders/' + oid).set({ 
                 id: oid, 
@@ -1103,7 +1298,9 @@
                 timestamp: firebase.database.ServerValue.TIMESTAMP 
             });
 
-            // WhatsApp Integration (Updated Format)
+            // Auto-save name if they didn't have one before
+            db.ref('users/' + USER_ID).update({ name: n });
+
             const msg = `
 *🛒 NEW NEXUS ORDER*
 ----------------------------
@@ -1154,7 +1351,6 @@ Please confirm delivery timeline.`.trim();
             const isLiked = wishlist.some(item => item.id === p.id);
             if(!isLiked) {
                 db.ref('users/' + USER_ID + '/wishlist/' + p.id).set(p);
-                // Optimistic UI update handled by listener, but we can animate btn
                 document.getElementById('like-btn').classList.add('text-rose-500');
             } else {
                 db.ref('users/' + USER_ID + '/wishlist/' + p.id).remove();
@@ -1189,7 +1385,6 @@ Please confirm delivery timeline.`.trim();
             document.querySelectorAll('.page').forEach(p => p.classList.remove('page-active'));
             document.getElementById(id).classList.add('page-active');
             
-            // Nav Bar Styling
             const navMap = {'home-page':'nav-home', 'cart-page':'nav-cart', 'profile-page':'nav-profile'};
             
             Object.values(navMap).forEach(btnId => {
@@ -1208,25 +1403,6 @@ Please confirm delivery timeline.`.trim();
             document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected'); 
             selectedSize = s;
-        }
-
-        function selectColor(btn, c) {
-            document.querySelectorAll('.color-option').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            selectedColor = c;
-        }
-
-        function uploadPFP(e) {
-            const file = e.target.files[0];
-            if(!file) return;
-            if(file.size > 1000000) return alert("⚠️ Image too large! Keep it under 1MB.");
-            
-            const reader = new FileReader();
-            reader.onload = (f) => {
-                db.ref('users/' + USER_ID).update({ pfp: f.target.result });
-                document.getElementById('pfp-img').src = f.target.result;
-            };
-            reader.readAsDataURL(file);
         }
 
         function openDynamicHub() {
